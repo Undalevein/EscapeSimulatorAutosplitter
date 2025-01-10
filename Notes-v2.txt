@@ -1,0 +1,22 @@
+How-to:
+1. Unzip .zip -> Copy Components folder to LiveSplit Components folder and merge contents
+2. Open LiveSplit
+3. Right-click LiveSplit -> "Edit Layout..." -> Click "+" -> Control -> "Scriptable Auto Splitter"
+4. Click "Layout Settings" on the bottom of the Layout Editor
+5. Click on "Scriptable Auto Splitter" tab
+6. Browse... to .ASL file in the zip
+7. Make sure Start, Split, and Reset are checked for "Options:"
+8. Click Ok
+9. Start playing the game and test
+
+Notes:
+v2
+Comments:
+1. Added SteamPunk DLC, not fully tested
+
+v1
+Comments:
+1. Suggest adding 1 second delay to 1st split, player control is about 1 second after the 1st scene is "loaded"
+2. Last split needs to be split manually until someone finds a way to identify the last level complete
+3. Resets timer when you go back to Menu
+4. There is somewhat of a load remover, so there will be some delta between REALTIME and GAME TIME. We should use Realtime until a more reliable load remover is found
