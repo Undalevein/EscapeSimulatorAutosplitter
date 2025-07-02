@@ -6,6 +6,18 @@ As Escape Simulator gets more updates, loading times continue to get worse and w
 
 This autosplitter is meant to address this issue by not only giving accurate split times for comparison, but to also remove loading times to make running Escape Simulator more accesssible to players.
 
+### Implementation
+
+To implement the autosplitter (at the moment), you cannot do the conventional way of activating the autosplitter. Instead, you must follow these steps.
+
+1. Download the file `IndividualLevel-EscapeSimulator-AutoSplit.asl` and put somewhere in your computer. Copy the file location of that file onto your clipboard.
+2. Right click your Livesplit timer and select "Edit Layout..."
+3. Add a new component by clicking on the "+" button. Go to "Control" and add the "Scriptable Auto Splitter" component.
+4. Select the added component. There, you can paste your file location into the "Script Path" textbox. Otherwise, you can click on "Browse" to select that asl file. 
+5. Toggle the options like you would normally with an Auto Splitter.
+6. Boot up the game and test it!
+
+
 ### Credit
 
 This is a continuation on Jonc4's autosplitter that was made in the beginning, with the last update being the Steampunk update. With his work, I was able to fix some of the features he made, so I am grateful for his efforts.
@@ -17,5 +29,5 @@ Here is a roadmap on what I would add during development:
 1. **Timer Start/Split Control** - I want the autosplitter to start and split automatically for the speedrun. Currently, the Autosplitter does start when you enter a level, but if you try to reset your splits, the autosplitter will start again. This is a bug that I am working to resolve.
 2. **Remove Loading Times** - To make competition fair, I plan to remove loading times for the Autosplitter. The hope is to remove the time between opening up the level and when the player has complete control of their character. The Autosplitter somewhat can do that by referencing the level name and checking if it is not the string Empty or a null type, but it does not remove the times where the player cannot move.
 3. **Coop Support** - For those who want to speedrun together with friends, this is what I want to include. Similarly to my plan to remove loading times, I plan to make sure that the run does not start until all players have total control (or at least 1 of the players).
-4. **IL Auto Reset** - I want to include an automatic reset option for players who want to automatically reset their splits when they reset. This can be either returning to the main menu or resetting the level they once are currently on. This is not on by default, but it's an option for runners.
+4. **IL Auto Reset** - I want to include an automatic reset option for players who want to automatically reset their splits when they reset. This can be either returning to the main menu or resetting the level they once are currently on. This is not on by default, but it's an option for runners. I also want this to be a smart IL reset. If say you reset in the first level, your timer should reset. If you reset not in the first level of the pack, then such reset will be ignored until you quit to the menu.
 5. **Legacy Version Support** - For runs that are better ran on the legacy version than on the current version, I plan to implement those based on popular demand since there's too many versions of Escape Simulator especailly as it continues to get new updates.
