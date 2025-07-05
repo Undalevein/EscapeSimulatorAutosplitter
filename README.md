@@ -10,7 +10,7 @@ This autosplitter is meant to address this issue by not only giving accurate spl
 
 To implement the autosplitter (at the moment), you cannot do the conventional way of activating the autosplitter. Instead, you must follow these steps.
 
-1. Download the file `EscapeSimulator.asl` and put somewhere in your computer. Copy the file location of that file onto your clipboard.
+1. Download the file `EscapeSimulator.asl` and the `Components` folder with the helper file and put somewhere in your computer. They should both be in the same directory. Copy the file location of the `.asl` file onto your clipboard.
 2. Right click your Livesplit timer and select "Edit Layout..."
 3. Add a new component by clicking on the "+" button. Go to "Control" and add the "Scriptable Auto Splitter" component.
 4. Select the added component. There, you can paste your file location into the "Script Path" textbox. Otherwise, you can click on "Browse" to select that asl file. 
