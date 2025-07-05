@@ -112,6 +112,7 @@ init
     old.SceneName = "null";
     old.roomTimer = -1.0f;
     old.playerState = 0;
+    old.gameOverlay = 256;
 }
 
 update
@@ -172,7 +173,8 @@ start
             - If the player is playing in Full Game Mode, then start once the
               player has control in Tutorial (the first section).
     */
-    if (old.SceneId != current.SceneId && 
+    if (old.gameOverlay == 256 && 
+        current.gameOverlay == 0 && 
         (settings["il_mode"] && vars.IndividualLevelStart.Contains(current.SceneName) ||
          settings["tutorial_start"] && current.SceneName == "Toy1" ||
          settings["first_chamber_start"] && current.SceneName == "Adventure1"))
