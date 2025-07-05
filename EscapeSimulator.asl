@@ -103,6 +103,7 @@ startup
     vars.hasSplit = false;
     vars.canLogLoading = true;
     vars.split = false;
+    vars.savedPreviousScene = "null";
 }
 
 init
@@ -136,9 +137,10 @@ update
         vars.isLoading = false;
     }
 
-    // When changing scenes, reset the split latch.
+    // When changing scenes, reset the split latch and save old scene.
     if (old.SceneId != current.SceneId)
     {
+        vars.savedPreviousScene = old.SceneId;
         vars.hasSplit = false;
         vars.log("Entered scene " + current.SceneName);
     }
@@ -175,11 +177,13 @@ start
     */
     if (old.gameOverlay == 256 && 
         current.gameOverlay == 0 && 
+        vars.savedPreviousScene != current.SceneId &&
         (settings["il_mode"] && vars.IndividualLevelStart.Contains(current.SceneName) ||
          settings["tutorial_start"] && current.SceneName == "Toy1" ||
          settings["first_chamber_start"] && current.SceneName == "Adventure1"))
     {
         vars.log("Timer started in " + current.SceneName);
+        vars.savedPreviousScene = current.SceneId;
         return true;
     }
 }
