@@ -14,7 +14,8 @@ state("Escape Simulator")
 {
     float roomTimer : "UnityPlayer.dll", 0x01CB9700, 0x0, 0x58, 0x28, 0x2E8, 0x38, 0x20, 0x14F8;
     int playerState : "mono-2.0-bdwgc.dll", 0x00774358, 0x280, 0xCF0, 0x70, 0x200, 0x120, 0xE0, 0xF28, 0x3C;
-    
+    int gameOverlay : "gameoverlayrenderer64.dll", 0x00153B24;
+
     // Pointer below checks if player is active or not. Celebration and inspecting are always 3. Maybe has some use in other versions?
     //byte playerState1 : "UnityPlayer.dll", 0x01D23C50, 0x2B0, 0x10, 0x10, 0x238, 0x18, 0x10, 0x10, 0x160, 0xEA8;
 }
@@ -124,8 +125,15 @@ update
     // Level names is used for logging and accurate comparaisons.
     current.SceneName = vars.Helper.Scenes.Active.Name;
 
-    // Check if scene is in a loading screen. 
-    vars.isLoading = current.SceneName == "Empty" || current.SceneName == null;
+    // Check if scene is in a loading screen. Resume if the player has control.
+    if (current.SceneName == "Empty" || current.SceneName == null)
+    {
+        vars.isLoading = true;
+    }
+    else if (old.gameOverlay == 256 && current.gameOverlay == 0)
+    {
+        vars.isLoading = false;
+    }
 
     // When changing scenes, reset the split latch.
     if (old.SceneId != current.SceneId)
@@ -137,7 +145,7 @@ update
     // Log changes in player state.
     if (old.playerState != current.playerState)
     {
-        vars.log("Current player state: " + current.playerState);
+        vars.log("Current player state: " + current.playerState + " " + current.gameOverlay);
     }
 
     // Split when you finish a level that is not Toy1, the menu, or loading screens.
