@@ -132,7 +132,8 @@ update
     {
         vars.isLoading = true;
     }
-    else if (old.gameOverlay == 256 && current.gameOverlay == 0)
+    else if (old.gameOverlay == 256 && current.gameOverlay == 0 || 
+             current.SceneName == vars.MenuName && old.playerState == 0 && current.playerState == 1123090432)
     {
         vars.isLoading = false;
     }
