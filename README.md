@@ -22,12 +22,21 @@ To implement the autosplitter (at the moment), you cannot do the conventional wa
 
 This is a continuation on Jonc4's autosplitter that was made in the beginning, with the last update being the Steampunk update. With his work, I was able to fix some of the features he made, so I am grateful for his efforts.
 
-## Autosplitter Roadmap
+## Autosplitter Milestones
 
-Here is a roadmap on what I would add during development:
+Here's what has been completed so far:
+- Add 1 second delay to 1st split, player control is about 1 second after the 1st scene is "loaded" [Completed 7/5/2025, used a base address]
+- Split when player has completed the level (basically when the celebration starts for the first time). [Completed 7/5/2025]
+- Resets timer when you go back to Menu (For IL runs). [Completed 7/5/2025]
+- Figure out a way to remove load times. [Completed 7/5/2025]
+- Timer must automatically start. [Completed 7/5/2025]
 
-1. **Timer Start/Split Control** - I want the autosplitter to start and split automatically for the speedrun. Currently, the Autosplitter does start when you enter a level, but if you try to reset your splits, the autosplitter will start again. This is a bug that I am working to resolve.
-2. **Remove Loading Times** - To make competition fair, I plan to remove loading times for the Autosplitter. The hope is to remove the time between opening up the level and when the player has complete control of their character. The Autosplitter somewhat can do that by referencing the level name and checking if it is not the string Empty or a null type, but it does not remove the times where the player cannot move.
-3. **Coop Support** - For those who want to speedrun together with friends, this is what I want to include. Similarly to my plan to remove loading times, I plan to make sure that the run does not start until all players have total control (or at least 1 of the players).
-4. **IL Auto Reset** - I want to include an automatic reset option for players who want to automatically reset their splits when they reset. This can be either returning to the main menu or resetting the level they once are currently on. This is not on by default, but it's an option for runners. I also want this to be a smart IL reset. If say you reset in the first level, your timer should reset. If you reset not in the first level of the pack, then such reset will be ignored until you quit to the menu.
-5. **Legacy Version Support** - For runs that are better ran on the legacy version than on the current version, I plan to implement those based on popular demand since there's too many versions of Escape Simulator especailly as it continues to get new updates.
+Here is a roadmap on what I would add during development, which may or may not be accomplished:
+
+1. **Coop Support** - For those who want to speedrun together with friends, this is what I want to include. Similarly to my plan to remove loading times, I plan to make sure that the run does not start until all players have total control (or at least 1 of the players). I have yet to test this autosplitter in a multiplayer setting though.
+2. **Legacy Version Support** - For runs that are better ran on the legacy version than on the current version, I plan to implement those based on popular demand since there's too many versions of Escape Simulator especailly as it continues to get new updates. Since glitches get patched out, I figure I might as well integrate the autosplitter there.
+3. **100% Runs** - If you complete a level but have not collected all of the Tokens, the autosplitter should not split if you have not collected all of the Tokens. I will need to keep track of the levels you have completed first, but I do need an address pointer to these Tokens themselves.
+
+Though, here are some things that I may not be willing to do:
+1. **VR** - I don't own Escape Simulator in VR, nor do I know how to configure one. Unless there are some demand, I may try, but this is something that is the bottom of the barrel in terms of priorities.
+2. **Other Consoles** - My Mac is busted, and I don't think I will get another anytime soon. XBox, PlayStation, and other console versions I may not consider.
