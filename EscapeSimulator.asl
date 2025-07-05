@@ -100,6 +100,7 @@ startup
 
     vars.isLoading = false;
     vars.hasSplit = false;
+    vars.canLogLoading = true;
     vars.split = false;
 }
 
