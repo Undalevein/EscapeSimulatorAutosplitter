@@ -1,38 +1,47 @@
 /*
     Code inspiration from CaptainRektbeard's Viewfinder Autosplitter and mauer01's 5D Chess with
-    Multiverse Time Travel Autosplitter.
+    Multiverse Time Travel Autosplitter, and hatkirby's Lingo 2 Autosplitter (thank for helping me
+    on making a log filing system).
 
     Continuation of Jonc4's TAS that was worked since the Steampunk Update. Credit to them 
     for getting some of the work done on this autosplitter that I have continued.
 
     Author: Undalevein
-    Last worked: July 2, 2025.
+    Last worked: July 5, 2025.
 */
 
 state("Escape Simulator") 
 {
     float roomTimer : "UnityPlayer.dll", 0x01CB9700, 0x0, 0x58, 0x28, 0x2E8, 0x38, 0x20, 0x14F8;
-    //int playerPose : "UnityPlayer.dll", 0x01C412C0, 0x368, 0x50, 0x8, 0x8, 0x8, 0x170, 0x18;
-    //byte playerState1 : "UnityPlayer.dll", 0x01D23C50, 0x2B0, 0x10, 0x10, 0x238, 0x18, 0x10, 0x10, 0x160, 0xEA8;
     int playerState : "mono-2.0-bdwgc.dll", 0x00774358, 0x280, 0xCF0, 0x70, 0x200, 0x120, 0xE0, 0xF28, 0x3C;
+    
+    // Pointer below checks if player is active or not. Celebration and inspecting are always 3. Maybe has some use in other versions?
+    //byte playerState1 : "UnityPlayer.dll", 0x01D23C50, 0x2B0, 0x10, 0x10, 0x238, 0x18, 0x10, 0x10, 0x160, 0xEA8;
 }
 
 startup
 {
+    // Relative to Livesplit.exe (thank you hatkirby)
+    vars.logFilePath = Directory.GetCurrentDirectory() + "\\autosplitter_escapesimulator.log";
+    vars.log = (Action<string>)((string logLine) => {
+        string time = System.DateTime.Now.ToString("dd/MM/yy hh:mm:ss.fff");
+        print("[Escape Simulator ASL] " + logLine);
+        // AppendAllText will create the file if it doesn't exist.
+        System.IO.File.AppendAllText(vars.logFilePath, "[" + time + "] - " + logLine + "\r\n");
+    });
+
     var bytes = File.ReadAllBytes(@"Components\LiveSplit.ASLHelper.bin");
     var type = Assembly.Load(bytes).GetType("ASLHelper.Unity");
     vars.Helper = Activator.CreateInstance(type, timer, this);
     vars.Helper.LoadSceneManager = true;
 
-    settings.Add("last_pack_split", false, "Split at the moment when you complete the last level in the pack.");
-    settings.Add("level_completion_split", true, "Split when completing a level.");
+    settings.Add("last_pack_split", false, "Split when you complete the last level in the pack.");
+    settings.Add("level_completion_split", true, "Split when completing any level.");
     settings.Add("tutorial_start", false, "Full Game Runs: Start timings with the Tutorial level.");
     settings.Add("first_chamber_start", false, "First # Runs: Start timings with The First Chamber level.");
-    settings.Add("il_mode", false, "Individual Level Runs: timer starts in opening first level, ends at last.");
+    settings.Add("il_mode", false, "Individual Level Runs: timer starts in opening first level, ends at last. Resets when entering menu.");
 
     vars.MenuName = "MenuPC";
-
-    List<string> LevelSplits = new List<string>();
 
     List<string> IndividualLevelStart = new List<string>();
     IndividualLevelStart.Add("Toy1");               // Tutorial (first part)
@@ -56,6 +65,7 @@ startup
     IndividualLevelStart.Add("AmongUs1");           // Among Us DLC
     IndividualLevelStart.Add("PowerWash1");         // PowerWash DLC
     IndividualLevelStart.Add("Talos1");             // The Talos Principle DLC
+    vars.IndividualLevelStart = IndividualLevelStart;
 
     List<string> IndividualLevelTerminate = new List<string>();
     IndividualLevelTerminate.Add("Toy2");           // Tutorial (second part)
@@ -79,16 +89,15 @@ startup
     IndividualLevelTerminate.Add("AmongUs1");       // Among Us DLC
     IndividualLevelTerminate.Add("PowerWash1");     // PowerWash DLC
     IndividualLevelTerminate.Add("Talos1");         // The Talos Principle DLC
+    vars.IndividualLevelTerminate = IndividualLevelTerminate;
 
     List<string> NonSplitableScenes = new List<string>();
-    NonSplitableScenes.Add("MenuPC");
-    NonSplitableScenes.Add("Empty");
-    NonSplitableScenes.Add("Toy1");
-    NonSplitableScenes.Add(null);
-
-    vars.IndividualLevelStart = IndividualLevelStart;
-    vars.IndividualLevelTerminate = IndividualLevelTerminate;
+    NonSplitableScenes.Add(vars.MenuName);          // Main Menu
+    NonSplitableScenes.Add("Empty");                // Loading Scene
+    NonSplitableScenes.Add(null);                   // Loading Transition
+    NonSplitableScenes.Add("Toy1");                 // Tutorial (first part)
     vars.NonSplitableScenes = NonSplitableScenes;
+
     vars.isLoading = false;
     vars.hasSplit = false;
     vars.split = false;
@@ -121,17 +130,19 @@ update
     if (old.SceneId != current.SceneId)
     {
         vars.hasSplit = false;
-        print("[" + DateTime.Now.ToString("M/d/yyyy hh:mm:ss.fff") + "] - Entered scene " + current.SceneName);
+        vars.log("Entered scene " + current.SceneName);
     }
 
     // Log changes in player state.
     if (old.playerState != current.playerState)
     {
-        print("[" + DateTime.Now.ToString("M/d/yyyy hh:mm:ss.fff") + "] - Current player state: " + current.playerState);
+        vars.log("Current player state: " + current.playerState);
     }
 
-    // Split when you finish a level that is not Toy1, the menu., or during loading.
-    if (!vars.NonSplitableScenes.Contains(current.SceneName) && !vars.hasSplit && (current.playerState == 1112570761 || current.playerState == 1121216102))
+    // Split when you finish a level that is not Toy1, the menu, or loading screens.
+    if (!vars.NonSplitableScenes.Contains(current.SceneName) && 
+        !vars.hasSplit && 
+        (current.playerState == 1112570761 || current.playerState == 1121216102))       // These are the numbers that indicate room completion.
     {
         vars.split = settings["level_completion_split"] || 
                      settings["last_pack_split"] && vars.IndividualLevelTerminate.Contains(current.SceneName);
@@ -157,7 +168,7 @@ start
          settings["tutorial_start"] && current.SceneName == "Toy1" ||
          settings["first_chamber_start"] && current.SceneName == "Adventure1"))
     {
-        print("[" + DateTime.Now.ToString("M/d/yyyy hh:mm:ss.fff") + "] - Timer started in " + current.SceneName);
+        vars.log("Timer started in " + current.SceneName);
         return true;
     }
 }
@@ -170,7 +181,7 @@ reset
     */
     if (settings["il_mode"] && current.SceneName == vars.MenuName && old.SceneId != current.SceneId)
     {
-        print("[" + DateTime.Now.ToString("M/d/yyyy hh:mm:ss.fff") + "] - Timer restarted in " + current.SceneName);
+        vars.log("Timer restarted in " + current.SceneName);
         return true;
     }
 }
@@ -178,11 +189,9 @@ reset
 split
 {
     // We split the timer whenever the player completes a level (when the player celebrates)
-    // We're using the in-game timer. This is a bit scuffed if the player takes too long to
-    // solve the room, but this should suffice for now.
     if (vars.split) 
     {
-        print("[" + DateTime.Now.ToString("M/d/yyyy hh:mm:ss.fff") + "] - Split occured in " + current.SceneName);
+        vars.log("Split occured in " + current.SceneName);
         return true;
     }
 }
@@ -190,14 +199,16 @@ split
 isLoading
 {
     // Loading times happen when the player is transitioning between different scenes.
-    // Timer should resume based on the room timer (it can be invisible), regardless of player settings.
+    // Resumes if the scene is rendered.
     if (vars.isLoading && vars.canLogLoading) 
     {
-        print("[" + DateTime.Now.ToString("M/d/yyyy hh:mm:ss.fff") + "] - Level is loading, timer paused.");
+        vars.log("Level is loading, timer paused.");
         vars.canLogLoading = false;
     }
     else if (!vars.isLoading)
     {
+        if (!vars.canLogLoading)
+            vars.log("Level has finished loading, timer resumed.");
         vars.canLogLoading = true;
     }
     return vars.isLoading;
