@@ -12,7 +12,9 @@
 state("Escape Simulator") 
 {
     float roomTimer : "UnityPlayer.dll", 0x01CB9700, 0x0, 0x58, 0x28, 0x2E8, 0x38, 0x20, 0x14F8;
-    int playerPose : "UnityPlayer.dll", 0x01C412C0, 0x368, 0x50, 0x8, 0x8, 0x8, 0x170, 0x18;
+    //int playerPose : "UnityPlayer.dll", 0x01C412C0, 0x368, 0x50, 0x8, 0x8, 0x8, 0x170, 0x18;
+    //byte playerState1 : "UnityPlayer.dll", 0x01D23C50, 0x2B0, 0x10, 0x10, 0x238, 0x18, 0x10, 0x10, 0x160, 0xEA8;
+    int playerState : "mono-2.0-bdwgc.dll", 0x00774358, 0x280, 0xCF0, 0x70, 0x200, 0x120, 0xE0, 0xF28, 0x3C;
 }
 
 startup
@@ -31,111 +33,64 @@ startup
     vars.MenuName = "MenuPC";
 
     List<string> LevelSplits = new List<string>();
-    LevelSplits.Add("Toy2");            // Tutorial (Level Ends in Toy2)
-    LevelSplits.Add("Adventure1");      // Labyrinth of Egypt
-    LevelSplits.Add("Adventure2");
-    LevelSplits.Add("Adventure3");
-    LevelSplits.Add("Adventure4");
-    LevelSplits.Add("Adventure5");
-    LevelSplits.Add("Space1");          // Lost in Space
-    LevelSplits.Add("Space2");
-    LevelSplits.Add("Space3");
-    LevelSplits.Add("Space4");
-    LevelSplits.Add("Space5");
-    LevelSplits.Add("Victorian1");      // Edgewood Mansion
-    LevelSplits.Add("Victorian2");
-    LevelSplits.Add("Victorian3");
-    LevelSplits.Add("Victorian4");
-    LevelSplits.Add("Victorian5");
-    LevelSplits.Add("Corporation1");    // Omega Corporation
-    LevelSplits.Add("Corporation2");
-    LevelSplits.Add("Corporation3");
-    LevelSplits.Add("Corporation4");
-    LevelSplits.Add("Corporation5");
-    LevelSplits.Add("Holiday1");        // Santa's Workshop
-    LevelSplits.Add("Holiday2");        // Graveyard
-    LevelSplits.Add("Holiday3");        // Cats in Time
-    LevelSplits.Add("Holiday4");        // 70's Room
-    LevelSplits.Add("Holiday5");        // Leonardo's Workshop
-    LevelSplits.Add("Holiday6");        // Treasure Island
-    LevelSplits.Add("Holiday7");        // Detective's Office
-    LevelSplits.Add("Race1");           // Versus
-    LevelSplits.Add("Race2");
-    LevelSplits.Add("Mayan1");          // Mayan DLC
-    LevelSplits.Add("Mayan2");
-    LevelSplits.Add("Mayan3");
-    LevelSplits.Add("Mayan4");
-    LevelSplits.Add("Magic1");          // Magic DLC
-    LevelSplits.Add("Magic2");
-    LevelSplits.Add("Magic3");
-    LevelSplits.Add("Magic4");
-    LevelSplits.Add("Western1");        // Wild West DLC
-    LevelSplits.Add("Western2");
-    LevelSplits.Add("Western3");
-    LevelSplits.Add("Western4");
-    LevelSplits.Add("Dieselpunk1");     // Steampunk DLC
-    LevelSplits.Add("Dieselpunk2");
-    LevelSplits.Add("Dieselpunk3");
-    LevelSplits.Add("Dieselpunk4");
-    LevelSplits.Add("Portal1");         // Portal DLC
-    LevelSplits.Add("AmongUs1");        // Among Us DLC
-    LevelSplits.Add("PowerWash1");      // PowerWash Simulator DLC
-    LevelSplits.Add("Talos1");          // The Talos Principle DLC
 
     List<string> IndividualLevelStart = new List<string>();
-    IndividualLevelStart.Add("Toy1");
-    IndividualLevelStart.Add("Adventure1");
-    IndividualLevelStart.Add("Space1");
-    IndividualLevelStart.Add("Victorian1");
-    IndividualLevelStart.Add("Corporation1");
-    IndividualLevelStart.Add("Holiday1");
-    IndividualLevelStart.Add("Holiday2");
-    IndividualLevelStart.Add("Holiday3");
-    IndividualLevelStart.Add("Holiday4");
-    IndividualLevelStart.Add("Holiday5");
-    IndividualLevelStart.Add("Holiday6");
-    IndividualLevelStart.Add("Holiday7");
-    IndividualLevelStart.Add("Race1");
-    IndividualLevelStart.Add("Mayan1");
-    IndividualLevelStart.Add("Magic1");
-    IndividualLevelStart.Add("Western1");
-    IndividualLevelStart.Add("Dieselpunk1");
-    IndividualLevelStart.Add("Portal1");
-    IndividualLevelStart.Add("AmongUs1");
-    IndividualLevelStart.Add("PowerWash1");
-    IndividualLevelStart.Add("Talos1");
+    IndividualLevelStart.Add("Toy1");               // Tutorial (first part)
+    IndividualLevelStart.Add("Adventure1");         // First Chamber
+    IndividualLevelStart.Add("Space1");             // Emergency Awakening
+    IndividualLevelStart.Add("Victorian1");         // Brain Checkup
+    IndividualLevelStart.Add("Corporation1");       // The Lobby
+    IndividualLevelStart.Add("Holiday1");           // Santa's Workshop
+    IndividualLevelStart.Add("Holiday2");           // Graveyard
+    IndividualLevelStart.Add("Holiday3");           // Cats in Time
+    IndividualLevelStart.Add("Holiday4");           // 70's Room
+    IndividualLevelStart.Add("Holiday5");           // Leonardo's Workshop
+    IndividualLevelStart.Add("Holiday6");           // Treasure Island
+    IndividualLevelStart.Add("Holiday7");           // Detective's Office
+    IndividualLevelStart.Add("Race1");              // Versus Apprentice
+    IndividualLevelStart.Add("Mayan1");             // Jaguar's Gate
+    IndividualLevelStart.Add("Magic1");             // Magic Shop
+    IndividualLevelStart.Add("Western1");           // The Jail
+    IndividualLevelStart.Add("Dieselpunk1");        // The Crew Quarters
+    IndividualLevelStart.Add("Portal1");            // Portal Escape Chamber
+    IndividualLevelStart.Add("AmongUs1");           // Among Us DLC
+    IndividualLevelStart.Add("PowerWash1");         // PowerWash DLC
+    IndividualLevelStart.Add("Talos1");             // The Talos Principle DLC
 
     List<string> IndividualLevelTerminate = new List<string>();
-    IndividualLevelTerminate.Add("Toy1");
-    IndividualLevelTerminate.Add("Adventure5");
-    IndividualLevelTerminate.Add("Space5");
-    IndividualLevelTerminate.Add("Victorian5");
-    IndividualLevelTerminate.Add("Corporation5");
-    IndividualLevelTerminate.Add("Holiday6");
-    LevelSplits.Add("Holiday1");
-    LevelSplits.Add("Holiday2");
-    LevelSplits.Add("Holiday3");
-    LevelSplits.Add("Holiday4");
-    LevelSplits.Add("Holiday5");
-    LevelSplits.Add("Holiday6");
-    LevelSplits.Add("Holiday7");
-    IndividualLevelTerminate.Add("Race2");
-    IndividualLevelTerminate.Add("Mayan4");
-    IndividualLevelTerminate.Add("Magic4");
-    IndividualLevelTerminate.Add("Western4");
-    IndividualLevelTerminate.Add("Dieselpunk4");
-    IndividualLevelTerminate.Add("Portal1");
-    IndividualLevelTerminate.Add("AmongUs1");
-    IndividualLevelTerminate.Add("PowerWash1");
-    IndividualLevelTerminate.Add("Talos1");
+    IndividualLevelTerminate.Add("Toy2");           // Tutorial (second part)
+    IndividualLevelTerminate.Add("Adventure5");     // The Top
+    IndividualLevelTerminate.Add("Space5");         // Space Walk
+    IndividualLevelTerminate.Add("Victorian5");     // The Underground Lab
+    IndividualLevelTerminate.Add("Corporation5");   // Metaverse
+    IndividualLevelTerminate.Add("Holiday1");       // Santa's Workshop
+    IndividualLevelTerminate.Add("Holiday2");       // Graveyard
+    IndividualLevelTerminate.Add("Holiday3");       // Cats in Time
+    IndividualLevelTerminate.Add("Holiday4");       // 70's Room
+    IndividualLevelTerminate.Add("Holiday5");       // Leonardo's Workshop
+    IndividualLevelTerminate.Add("Holiday6");       // Treasure Island
+    IndividualLevelTerminate.Add("Holiday7");       // Detective's Office
+    IndividualLevelTerminate.Add("Race2");          // Versus Expert
+    IndividualLevelTerminate.Add("Mayan4");         // Monkey Temple
+    IndividualLevelTerminate.Add("Magic4");         // Divination Towers
+    IndividualLevelTerminate.Add("Western4");       // The Train
+    IndividualLevelTerminate.Add("Dieselpunk4");    // The Helm Room
+    IndividualLevelTerminate.Add("Portal1");        // Portal Escape Chamber
+    IndividualLevelTerminate.Add("AmongUs1");       // Among Us DLC
+    IndividualLevelTerminate.Add("PowerWash1");     // PowerWash DLC
+    IndividualLevelTerminate.Add("Talos1");         // The Talos Principle DLC
 
-    vars.LevelSplits = LevelSplits;
+    List<string> NonSplitableScenes = new List<string>();
+    NonSplitableScenes.Add("MenuPC");
+    NonSplitableScenes.Add("Empty");
+    NonSplitableScenes.Add("Toy1");
+    NonSplitableScenes.Add(null);
+
     vars.IndividualLevelStart = IndividualLevelStart;
     vars.IndividualLevelTerminate = IndividualLevelTerminate;
+    vars.NonSplitableScenes = NonSplitableScenes;
     vars.isLoading = false;
-    vars.canLogLoading = true;
-    vars.celebrationPoseCounter = 0;
-    vars.hasJustCounted = false;
+    vars.hasSplit = false;
     vars.split = false;
 }
 
@@ -145,7 +100,7 @@ init
     old.SceneId = -2;
     old.SceneName = "null";
     old.roomTimer = -1.0f;
-    old.playerPose = -1;
+    old.playerState = 0;
 }
 
 update
@@ -160,38 +115,30 @@ update
     current.SceneName = vars.Helper.Scenes.Active.Name;
 
     // Check if scene is in a loading screen. 
-    vars.isLoading = current.SceneName == "Empty" || current.SceneName == "";
+    vars.isLoading = current.SceneName == "Empty" || current.SceneName == null;
 
-    // Reset split flag and logging scene changes.
+    // When changing scenes, reset the split latch.
     if (old.SceneId != current.SceneId)
     {
-        vars.celebrationPoseCounter = 0;
+        vars.hasSplit = false;
         print("[" + DateTime.Now.ToString("M/d/yyyy hh:mm:ss.fff") + "] - Entered scene " + current.SceneName);
     }
 
-    // Split when you finish a level that is not Toy1.
-    if (old.playerPose != current.playerPose)
+    // Log changes in player state.
+    if (old.playerState != current.playerState)
     {
-        print("[" + DateTime.Now.ToString("M/d/yyyy hh:mm:ss.fff") + "] - Current Pose: " + current.playerPose);
-    }   
+        print("[" + DateTime.Now.ToString("M/d/yyyy hh:mm:ss.fff") + "] - Current player state: " + current.playerState);
+    }
 
-    if (!vars.hasJustCounted && current.SceneName != "MenuPC" && current.SceneName != "Empty" && current.SceneName != "" && current.playerPose >= 0 && current.playerPose <= 3)
+    // Split when you finish a level that is not Toy1, the menu., or during loading.
+    if (!vars.NonSplitableScenes.Contains(current.SceneName) && !vars.hasSplit && (current.playerState == 1112570761 || current.playerState == 1121216102))
     {
-        print("[" + DateTime.Now.ToString("M/d/yyyy hh:mm:ss.fff") + "] - Pose Checked!");
-        vars.celebrationPoseCounter++;
-        if (vars.celebrationPoseCounter == 1)
-        {
-            vars.split = true;
-            print("[" + DateTime.Now.ToString("M/d/yyyy hh:mm:ss.fff") + "] - We've split!");
-        }
-        vars.hasJustCounted = true;
-    } 
+        vars.split = settings["level_completion_split"] || 
+                     settings["last_pack_split"] && vars.IndividualLevelTerminate.Contains(current.SceneName);
+        vars.hasSplit = true;
+    }   
     else
     {
-        if (current.playerPose >= 5 && current.playerPose <= 6)
-        {
-            vars.hasJustCounted = false;
-        }
         vars.split = false;
     }
 }
@@ -218,12 +165,10 @@ start
 reset
 {
     /*
-        We reset the timer depending on the player settings.
-            - If the player is playing in IL Mode, then we reset if the player
-              resets the first room of the pack OR they return to the menu at
-              any time.
+        We reset the timer if the player is playing in IL Mode. If so then we reset if the player
+        resets the first room of the pack OR they return to the menu at any time.
     */
-    if (settings["il_mode"] && current.SceneName == vars.MenuName)
+    if (settings["il_mode"] && current.SceneName == vars.MenuName && old.SceneId != current.SceneId)
     {
         print("[" + DateTime.Now.ToString("M/d/yyyy hh:mm:ss.fff") + "] - Timer restarted in " + current.SceneName);
         return true;
