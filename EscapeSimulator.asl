@@ -3,7 +3,7 @@
     Multiverse Time Travel Autosplitter, and hatkirby's Lingo 2 Autosplitter (thank for helping me
     on making a log filing system).
 
-    Continuation of Jonc4's TAS that was worked since the Steampunk Update. Credit to them 
+    Continuation of Jonc4's autosplitter that was worked since the Steampunk Update. Credit to them 
     for getting some of the work done on this autosplitter that I have continued.
 
     Author: Undalevein
