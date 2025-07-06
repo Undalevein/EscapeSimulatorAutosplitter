@@ -40,3 +40,7 @@ Here is a roadmap on what I would add during development, which may or may not b
 Though, here are some things that I may not be willing to do:
 1. **VR** - I don't own Escape Simulator in VR, nor do I know how to configure one. Unless there are some demand, I may try, but this is something that is the bottom of the barrel in terms of priorities.
 2. **Other Consoles** - My Mac is busted, and I don't think I will get another anytime soon. XBox, PlayStation, and other console versions I may not consider.
+
+## Escape Simulator 2 Roadmap
+
+Yep, I plan to make the autosplitter for Escape Simulator 2. From the demos, it appears that the gameplay and feel of Escape Simulator 2 is the same as Escape Simulator 1, except with a touch of dark realism paint. From the demo, I was able to carry over the load time removal. However, I will need to retrofit the later features into the run.
