@@ -108,7 +108,6 @@ startup
 
 init
 {
-    vars.Helper.Load();
     old.SceneId = -2;
     old.SceneName = "null";
     old.roomTimer = -1.0f;
