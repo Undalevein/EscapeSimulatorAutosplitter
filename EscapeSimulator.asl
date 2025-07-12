@@ -31,9 +31,9 @@ startup
         System.IO.File.AppendAllText(vars.logFilePath, "[" + time + "] - " + logLine + "\r\n");
     });
 
-    var bytes = File.ReadAllBytes(@"Components\LiveSplit.ASLHelper.bin");
-    var type = Assembly.Load(bytes).GetType("ASLHelper.Unity");
-    vars.Helper = Activator.CreateInstance(type, timer, this);
+
+    Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
+    vars.Helper.GameName = "Escape Simulator";
     vars.Helper.LoadSceneManager = true;
 
     settings.Add("last_pack_split", false, "Split when you complete the last level in the pack.");
@@ -118,13 +118,10 @@ init
 
 update
 {
-    if (!vars.Helper.Update())
-        return false;
-
     // Level ids are inconsistent between versions, but still used to
     // check if the index is different for efficiency.
     current.SceneId = vars.Helper.Scenes.Active.Index;
-    // Level names is used for logging and accurate comparaisons.
+    // Level names is used for logging and accurate comparaisons; more reliable.
     current.SceneName = vars.Helper.Scenes.Active.Name;
 
     // Check if scene is in a loading screen. Resume if the player has control.
@@ -152,7 +149,6 @@ update
         vars.log("Current player state: " + current.playerState + " " + current.gameOverlay);
     }
 
-    // Split when you finish a level that is not Toy1, the menu, or loading screens.
     if (!vars.NonSplitableScenes.Contains(current.SceneName) && 
         !vars.hasSplit && 
         (current.playerState == 1112570761 || current.playerState == 1121216102))       // These are the numbers that indicate room completion.
@@ -204,7 +200,6 @@ reset
 
 split
 {
-    // We split the timer whenever the player completes a level (when the player celebrates)
     if (vars.split) 
     {
         vars.log("Split occured in " + current.SceneName);
@@ -214,8 +209,6 @@ split
 
 isLoading
 {
-    // Loading times happen when the player is transitioning between different scenes.
-    // Resumes if the scene is rendered.
     if (vars.isLoading && vars.canLogLoading) 
     {
         vars.log("Level is loading, timer paused.");
@@ -228,14 +221,4 @@ isLoading
         vars.canLogLoading = true;
     }
     return vars.isLoading;
-}
-
-exit
-{
-    vars.Helper.Dispose();
-}
-
-shutdown
-{
-    vars.Helper.Dispose();
 }
