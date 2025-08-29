@@ -13,7 +13,7 @@
 state("Escape Simulator") 
 {
     float roomTimer : "UnityPlayer.dll", 0x01CB9700, 0x0, 0x58, 0x28, 0x2E8, 0x38, 0x20, 0x14F8;
-    int playerState : "mono-2.0-bdwgc.dll", 0x00774358, 0x280, 0xCF0, 0x70, 0x200, 0x120, 0xE0, 0xF28, 0x3C;
+    int playerState : "mono-2.0-bdwgc.dll", 0x007742A0, 0x280, 0x500, 0x120, 0x7C, 0x8, 0x8, 0xF28, 0x3C;
     int gameOverlay : "gameoverlayrenderer64.dll", 0x00153B24;
 
     // Pointer below checks if player is active or not. Celebration and inspecting are always 3. Maybe has some use in other versions?
