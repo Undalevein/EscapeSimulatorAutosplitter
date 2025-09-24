@@ -7,18 +7,11 @@
     for getting some of the work done on this autosplitter that I have continued.
 
     Author: Undalevein
-    Last worked: July 5, 2025.
+    Last worked: September 22, 2025.
 */
 
-state("Escape Simulator") 
-{
-    float roomTimer : "UnityPlayer.dll", 0x01CB9700, 0x0, 0x58, 0x28, 0x2E8, 0x38, 0x20, 0x14F8;
-    int playerState : "mono-2.0-bdwgc.dll", 0x00774358, 0x280, 0xCF0, 0x70, 0x200, 0x120, 0xE0, 0xF28, 0x3C;
-    int gameOverlay : "gameoverlayrenderer64.dll", 0x00153B24;
+state("Escape Simulator") {}
 
-    // Pointer below checks if player is active or not. Celebration and inspecting are always 3. Maybe has some use in other versions?
-    //byte playerState1 : "UnityPlayer.dll", 0x01D23C50, 0x2B0, 0x10, 0x10, 0x238, 0x18, 0x10, 0x10, 0x160, 0xEA8;
-}
 
 startup
 {
@@ -31,18 +24,16 @@ startup
         System.IO.File.AppendAllText(vars.logFilePath, "[" + time + "] - " + logLine + "\r\n");
     });
 
-
+    Assembly.Load(File.ReadAllBytes("Components/uhara6")).CreateInstance("Main");
     Assembly.Load(File.ReadAllBytes("Components/asl-help")).CreateInstance("Unity");
     vars.Helper.GameName = "Escape Simulator";
     vars.Helper.LoadSceneManager = true;
-
+    
     settings.Add("last_pack_split", false, "Split when you complete the last level in the pack.");
     settings.Add("level_completion_split", true, "Split when completing any level.");
     settings.Add("tutorial_start", false, "Full Game Runs: Start timings with the Tutorial level.");
     settings.Add("first_chamber_start", false, "First # Runs: Start timings with The First Chamber level.");
     settings.Add("il_mode", false, "Individual Level Runs: timer starts in opening first level, ends at last. Resets when entering menu.");
-
-    vars.MenuName = "MenuPC";
 
     List<string> IndividualLevelStart = new List<string>();
     IndividualLevelStart.Add("Toy1");               // Tutorial (first part)
@@ -58,6 +49,7 @@ startup
     IndividualLevelStart.Add("Holiday6");           // Treasure Island
     IndividualLevelStart.Add("Holiday7");           // Detective's Office
     IndividualLevelStart.Add("Race1");              // Versus Apprentice
+    IndividualLevelStart.Add("Spy1");               // Agency Headquarters
     IndividualLevelStart.Add("Mayan1");             // Jaguar's Gate
     IndividualLevelStart.Add("Magic1");             // Magic Shop
     IndividualLevelStart.Add("Western1");           // The Jail
@@ -82,6 +74,7 @@ startup
     IndividualLevelTerminate.Add("Holiday6");       // Treasure Island
     IndividualLevelTerminate.Add("Holiday7");       // Detective's Office
     IndividualLevelTerminate.Add("Race2");          // Versus Expert
+    IndividualLevelTerminate.Add("Spy4");           // Underwater Base
     IndividualLevelTerminate.Add("Mayan4");         // Monkey Temple
     IndividualLevelTerminate.Add("Magic4");         // Divination Towers
     IndividualLevelTerminate.Add("Western4");       // The Train
@@ -93,131 +86,162 @@ startup
     vars.IndividualLevelTerminate = IndividualLevelTerminate;
 
     List<string> NonSplitableScenes = new List<string>();
-    NonSplitableScenes.Add(vars.MenuName);          // Main Menu
+    NonSplitableScenes.Add("MenuPC");               // Main Menu
     NonSplitableScenes.Add("Empty");                // Loading Scene
     NonSplitableScenes.Add(null);                   // Loading Transition
     NonSplitableScenes.Add("Toy1");                 // Tutorial (first part)
     vars.NonSplitableScenes = NonSplitableScenes;
 
     vars.isLoading = false;
-    vars.hasSplit = false;
-    vars.canLogLoading = true;
-    vars.split = false;
-    vars.savedPreviousScene = "null";
 }
+
 
 init
 {
-    old.SceneId = -2;
-    old.SceneName = "null";
-    old.roomTimer = -1.0f;
-    old.playerState = 0;
-    old.gameOverlay = 256;
+    vars.Helper.TryLoad = (Func<dynamic, bool>)(mono =>
+    {
+        var jit = vars.Uhara.CreateTool("UnityCS", "JitSave");
+        jit.SetOuter("EscapeSimulator.Core");
+
+        var gameClass = mono["EscapeSimulator.Core", "Game"];
+        var gameInstance = jit.AddInst("Game");
+
+        var menuClass = mono["EscapeSimulator.Core", "Menu"];
+        var menuInstance = jit.AddInst("Menu");
+
+        var loadingCanvasClass = mono["EscapeSimulator.Core", "LoadingCanvas"];
+        var loadingCanvasInstance = jit.AddInst("LoadingCanvas");
+
+        jit.ProcessQueue();
+
+        vars.Helper["levelCompleted"] = vars.Helper.Make<bool>(gameInstance, gameClass["isLevelCompleted"]);
+        vars.Helper["exiting"] = vars.Helper.Make<bool>(gameInstance, gameClass["exiting"]);
+        vars.Helper["loadingFromMenu"] = vars.Helper.Make<bool>(menuInstance, menuClass["loadingLevel"]);
+        vars.Helper["alphaCurrent"] = vars.Helper.Make<float>(loadingCanvasInstance, loadingCanvasClass["alphaCurrent"]);
+        
+        return true;
+    });
+    
+    old.SceneName = "MenuPC";
+    current.SceneName = "MenuPC";
+    old.levelCompleted = false;
+    old.exiting = false;
+    old.loadingFromMenu = false;
+    old.alphaCurrent = 0.0;
 }
 
+
 update
-{
-    // Level ids are inconsistent between versions, but still used to
-    // check if the index is different for efficiency.
-    current.SceneId = vars.Helper.Scenes.Active.Index;
+{   
     // Level names is used for logging and accurate comparaisons; more reliable.
     current.SceneName = vars.Helper.Scenes.Active.Name;
 
-    // Check if scene is in a loading screen. Resume if the player has control.
-    if (current.SceneName == "Empty" || current.SceneName == null)
+    // Logging Swamp
+    if (old.levelCompleted != current.levelCompleted)
     {
-        vars.isLoading = true;
+        vars.log("Level Completed: " + current.levelCompleted);
     }
-    else if (old.gameOverlay == 256 && current.gameOverlay == 0 || 
-             current.SceneName == vars.MenuName && old.playerState == 0 && (current.playerState == 1123090432 || current.playerState == -1082018304))
+    if (old.exiting != current.exiting)
     {
-        vars.isLoading = false;
+        vars.log("Exiting: " + current.exiting);
     }
-
-    // When changing scenes, reset the split latch and save old scene.
-    if (old.SceneId != current.SceneId)
+    if (old.SceneName != current.SceneName)
     {
-        vars.savedPreviousScene = old.SceneId;
-        vars.hasSplit = false;
-        vars.log("Entered scene " + current.SceneName);
+        vars.log("Current Scene Name: " + current.SceneName);
     }
-
-    // Log changes in player state.
-    if (old.playerState != current.playerState)
+    if (old.loadingFromMenu != current.loadingFromMenu)
     {
-        vars.log("Current player state: " + current.playerState + " " + current.gameOverlay);
+        vars.log("loadingFromMenu ------------------------- " + current.loadingFromMenu);
     }
-
-    if (!vars.NonSplitableScenes.Contains(current.SceneName) && 
-        !vars.hasSplit && 
-        (current.playerState == 1112570761 || current.playerState == 1121216102))       // These are the numbers that indicate room completion.
-    {
-        vars.split = settings["level_completion_split"] || 
-                     settings["last_pack_split"] && vars.IndividualLevelTerminate.Contains(current.SceneName);
-        vars.hasSplit = true;
-    }   
-    else
-    {
-        vars.split = false;
-    }
+    // if (old.alphaCurrent != current.alphaCurrent)
+    // {
+    //     vars.log("alphaCurrent +++++++++++++++++++++++++++++ " + current.alphaCurrent);
+    // }
 }
+
 
 start
 {
     /*
-        We start the timer depending on the player settings.
-            - If the player is playing in IL Mode, then start when the player
-              has control on any of the first levels of a pack.
-            - If the player is playing in Full Game Mode, then start once the
-              player has control in Tutorial (the first section).
+        There isn't a convenient way to determine when a loading screen is active,
+        so below I used a proxy instead. A property of a loading screen in the game
+        has the following:
+            - Cursor being active
+            - Check if you are in a level (using the "exiting" variable)
+
+        To tell if a level started, this boolean attempts to figure out the moment
+        you transition from the loading screen (NOT WHEN THE OBJECTS ARE RENDERED IN) 
+        to gameplay.
+
+        One of the other conditions below must be satisfied as well, based on user's settings:
+            - il_mode is toggled on and the level is the beginning of the pack.
+            - tutorial_start is toggled on and the level is the Tutorial Level (first area).
+            - first_chamber_start is toggled on and the level is the First Chamber level.
+        
+        One last thing: NEVER START THE SPLIT TWICE OR MORE ON THE SAME LEVEL!!!
     */
-    if (old.gameOverlay == 256 && 
-        current.gameOverlay == 0 && 
-        vars.savedPreviousScene != current.SceneId &&
-        (settings["il_mode"] && vars.IndividualLevelStart.Contains(current.SceneName) ||
-         settings["tutorial_start"] && current.SceneName == "Toy1" ||
-         settings["first_chamber_start"] && current.SceneName == "Adventure1"))
-    {
-        vars.log("Timer started in " + current.SceneName);
-        vars.savedPreviousScene = current.SceneId;
-        return true;
-    }
+    bool doStart = current.alphaCurrent != 1f && old.alphaCurrent > current.alphaCurrent && 
+                   (settings["il_mode"] && vars.IndividualLevelStart.Contains(current.SceneName) ||
+                    settings["tutorial_start"] && current.SceneName == "Toy1" ||
+                    settings["first_chamber_start"] && current.SceneName == "Adventure1");
+    if (doStart) vars.log("Splits has started!");
+    return doStart;
 }
 
 reset
 {
     /*
-        We reset the timer if the player is playing in IL Mode. If so then we reset if the player
-        resets the first room of the pack OR they return to the menu at any time.
+        Reset only if the following conditions have been satisfied:
+            - The condition il_mode has been checked from the user settings.
+            - The player enters the Menu.
+
+        This assumes that no new strategies will involve going to the menu. However,
+        I believe that if the player leaves to the menu when running for IL runs,
+        most certainly they are doing this because they want to reset the entire
+        run.
     */
-    if (settings["il_mode"] && current.SceneName == vars.MenuName && old.SceneId != current.SceneId)
-    {
-        vars.log("Timer restarted in " + current.SceneName);
-        return true;
-    }
+    return settings["il_mode"] && current.SceneName == "MenuPC";
 }
+
+onReset
+{
+    /*
+        This method exists because vars.isLoading is a flip-flop variable, so reset it.
+    */
+    vars.isLoading = false;
+}
+
 
 split
 {
-    if (vars.split) 
-    {
-        vars.log("Split occured in " + current.SceneName);
-        return true;
-    }
+    /*
+        For all situations, the timer should split the moment the player gets the credit for 
+        completing the level. Unless the player restarts the level or moves on to the next 
+        level, the timer should never split again during the same level.
+
+        In addition, one of the following conditions must be satisfied according to user settings:
+            - level_completion_split is toggled on and any level has been completed
+            - last_pack_split is toggled on and the player completed the final level in a pack OR any
+              of the Extra levels.
+    */
+    bool doSplit = !old.levelCompleted && current.levelCompleted && !vars.NonSplitableScenes.Contains(current.SceneName) &&
+                   (settings["level_completion_split"] ||
+                    settings["last_pack_split"] && vars.IndividualLevelTerminate.Contains(current.SceneName));
+    if (doSplit) vars.log("Split has occurred!");
+    return doSplit;
 }
 
 isLoading
 {
-    if (vars.isLoading && vars.canLogLoading) 
+    if (vars.isLoading && current.alphaCurrent != 1f && old.alphaCurrent > current.alphaCurrent) 
+    {   
+        vars.log("Level has finished loading, timer resumed.");
+        vars.isLoading = false;
+    }
+    else if (!vars.isLoading && (current.exiting && current.SceneName != "MenuPC" || !old.loadingFromMenu && current.loadingFromMenu))
     {
         vars.log("Level is loading, timer paused.");
-        vars.canLogLoading = false;
-    }
-    else if (!vars.isLoading)
-    {
-        if (!vars.canLogLoading)
-            vars.log("Level has finished loading, timer resumed.");
-        vars.canLogLoading = true;
+        vars.isLoading = true;
     }
     return vars.isLoading;
 }
