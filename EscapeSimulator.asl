@@ -151,27 +151,25 @@ update
     }
     if (old.loadingFromMenu != current.loadingFromMenu)
     {
-        vars.log("loadingFromMenu ------------------------- " + current.loadingFromMenu);
+        vars.log("Is Loading from Menu: " + current.loadingFromMenu);
     }
-    // if (old.alphaCurrent != current.alphaCurrent)
-    // {
-    //     vars.log("alphaCurrent +++++++++++++++++++++++++++++ " + current.alphaCurrent);
-    // }
+    if (old.alphaCurrent != current.alphaCurrent)
+    {
+        if (old.alphaCurrent == 1f && current.alphaCurrent != 1f) 
+        {
+            vars.log("Alpha current is now lowering from 1.0");
+        }   
+    }
 }
 
 
 start
 {
     /*
-        There isn't a convenient way to determine when a loading screen is active,
-        so below I used a proxy instead. A property of a loading screen in the game
-        has the following:
-            - Cursor being active
-            - Check if you are in a level (using the "exiting" variable)
-
         To tell if a level started, this boolean attempts to figure out the moment
         you transition from the loading screen (NOT WHEN THE OBJECTS ARE RENDERED IN) 
-        to gameplay.
+        to gameplay. This is through the alphaCurrent variable, which is the transparnecy
+        value used for the loading screen image.
 
         One of the other conditions below must be satisfied as well, based on user's settings:
             - il_mode is toggled on and the level is the beginning of the pack.
