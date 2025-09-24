@@ -2,6 +2,9 @@
     Yep, a continuation of losing my mind in pointer scanning 2.0. Luckily there's carry over from
     the previous game.
 
+    For the record, this works for the DEMO version of the game. This will need to be changed
+    for the official release.
+
     Author: Undalevein
     Last worked: September 24, 2025.
 */
