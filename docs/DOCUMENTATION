@@ -1,0 +1,16 @@
+ESCAPE SIMULATOR & ESCAPE SIMULATOR 2 DOCUMENTATION
+--------------------------------------------------------------
+
+Author: Undalevein
+Date: 9-22-2025
+Description: An repository for the autosplitter scripts writting in the Autosplitter Language for both Escape Simulator (2021) and Escape Simulator 2 (2025) games, both developed by Pine Studios.
+
+Preface:
+When I decided to make the autosplitter for Escape Simulator, it was because of the load times were aggravating. Because of this, I decided during the summmer of 2025, I would try to make one to address this core issue. What I did not realize is how much maintenance this project needed. This game is constantly updating: new bug patches, extra levels, and DLCs. Not to mention that Escape Simulator 2 will also follow the same development cycle as its predecessor. Hence, this is where I made the documentation. While not going to be long as an industry documentation, this documentation will help guide new autosplitter programmers in case they want to improve my work. I absolutely want to help the community, but I also acknowledge that at some point, I will need to pass the torch to someone else especially with limited time I will have in the future. 
+
+External Scripts:
+There are two important scripts that are used: "asl-help" and "uhara6." Both must be located in the Components folder, the same folder as the LiveSplit executable.
+
+Let's start with "asl-help." This script, made by just-ero and contributed by others, comes from this GitHub repository: https://github.com/just-ero/asl-help. This script is an extension for the austoplitter specifically made for Unity games. It is a bit limited, only getting you the Unity Scene's name and id.
+
+"uhara6" on the other hand is more valuable, and it uses "asl-help."

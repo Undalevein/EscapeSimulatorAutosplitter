@@ -1,0 +1,336 @@
+Tweak Settings
+-----------------------------------------
+float       tweak_ZoomScaleMinimum
+float       tweak_ZoomScaleDivider
+float       tweak_ZoomDistanceModifier
+float       tweak_ItemScaleMinimum
+float       tweak_ItemScaleDivider
+float       tweak_ItemDistanceModifier
+bool        testingPlaymodeInEditor
+int         highestRenderQueueOffset
+bool        isEndScreenAnimationRunning
+bool        isIntroPlaying
+int         introCurrentShot
+int         introCurrentSubtitleCount
+bool        isIntroCurrentShotDone
+float       introCurrentTime
+string      currentSceneName
+float       levelTime
+float       levelFixedTimeFrames
+
+Prefab Values Settings
+---------------------------------------------
+float       characterBrightnessMultiplayer
+float       originalZoomLightIntensity
+bool        isLocalPlayerGhost
+float       startTime
+string      soundStep
+string      soundPuzzleComplete
+string      soundLevelComplete
+string      soundConfetti
+string      communityRoomStepSound
+float       inventoryItemScale
+int         slotFocusZoomedItemIndex
+float       controllerInventoryEdgeDistance
+float       screenPercentage
+float       exposureBoostIfNoBloom
+bool        lastAR
+float       lastWidth
+floaat      lastheight
+float       lastPercentage
+float       examineBlur
+string      overrideTokenPickupSound
+float       overrideTimerInitialTime
+float       timerCurrentTime
+bool        timerCountTime
+float       timerUpdateCooldown
+bool        isLevelCompleted
+float       playerTotalMovement
+float       floorY
+int         originalCullingMask
+string      roomTheme
+float       itemRespawnCheckTimer
+int         episodeIndex
+int         themeIndex
+int         currentTier
+int         invalidateExamineBlurState
+float       speedRunning
+float       speedWalking
+float       defaultFOV
+bool        isInZoomMode
+float       targetMobileZoomScale
+int         afterNavMeshInit
+bool        saveLoaded
+
+Anti-Motion Sickness Settings
+--------------------------------------------
+bool        checkedScenePPsWithEV
+float       ppWithBiggestEV
+float       ppWithSmallestEV
+int         restartedBrightnessPP
+bool        arInvalidated
+bool        renderTexturesInvalidated
+int         blurLevel
+bool        examineMode
+bool        onDownHitFound
+float       examineZoom
+float       examinePanX
+float       examinePanY
+bool        isClimbing
+bool        canGoOnLadder
+int         ladderDirection
+int         zoomableExit
+int         highestRenderQueueOffset
+bool        inControllerInteraction
+float       gesturePinch
+float       gesturePinchViewport
+float       gesturePinchTotal
+float       gesturePinchviewportTotal
+bool        gestureComplexActive
+float       shortPressTime
+bool        achievementsEnabled
+float       lookAtAchievementTimer
+bool        ignoreGreatTowerAch
+bool        alreadyGotGreatTower
+float       cullingDistance
+int         nextOccludeeIndex
+bool        iterateAllOcculudeesNextFrame
+int         cullingIterations
+int         cullingCloseCount
+int         cullingFarCount
+int         cullingCulledCount
+double      cullingDuration
+bool        videoEditorRunning
+float       videoTime
+float       speed
+int         selectedFrame
+int         originalUICameraCullingMask
+float       fieldOfView
+float       fieldOfViewOriginal
+
+Computer Vision Settings
+-------------------------------------------
+float       leftFootTargetTime
+float       rightFootTargetTime
+bool        freeCamOn
+int         currentSelectedIntroShot
+int         currentSelectedIntroSubtitle
+
+Debug Settings Settings
+-------------------------------------------
+bool        debugShowCastLine
+int         debugPresetSelectedPlayer
+bool        debugShouldShowPlayerNames
+bool        debugFadeCharacterWhenClose
+
+Debug Menu Options Settings
+-------------------------------------------
+bool        shotShowPositionRotation
+bool        isInIntroFreeCamMode
+bool        isIntroPlayingFromShot
+bool        loadedIntroEditor
+bool        benchmarkActive
+int         benchmarkLevelId
+string      prevSceneName
+float       benchmarkTimer
+bool        loadingNext
+
+Orbiting Settings
+-------------------------------------------
+bool        debugCamIsRotating
+int         debugCamStartAngle
+float       debugCamOrbitDistance
+float       debugCamOrbitSpeed
+float       debugCamOrbitRaiseSpeed
+bool        debugCamIsOrbiting
+bool        debugCamisRaisingInOrbit
+float       debugCamOrbitYStart
+float       debugCamOrbitYEnd
+float       debugCamOrbitYSample
+
+Debug - Renderer Performance Test Settings
+-------------------------------------------
+int         rendererPerformanceTestMinimumVertexCount
+int         rendererPerformanceTestMeasureFrameCount
+int         rendererPerformanceTestWarmupFrameCount
+bool        rendererPerformanceTestViewWholeScene
+bool        isRunningRendererPerformanceTest
+bool        isMockedDemo
+float       hintBoxTimer
+float       totalLookTime
+float       lookTimer
+float       vrHintHandScaleFactor
+bool        canLeaveZoomAfterFrame
+bool        isMovementLimited
+bool        isRunning - Checks if the player is currently running. 
+bool        isPlayingTrashAudio
+float       zoomItemSzie
+bool        timerOverLimit
+float       timerLastPlayedTickSound
+bool        isInGeometry
+float       waterTimeScale
+float       waterTargetTime
+bool        stopJointRigidbodies
+int         lockedFramesAfterMouseLock
+bool        bigInventory
+int         itemDragZoomInteractionSessionId
+int         zommingEnabledTally
+float       timeToStopOrbitEmitter
+int         switchSessionId
+int         dialSessionId
+float       currentControllerRotationSpeed
+int         dialAudioTurnOffDelay
+float       controllerDialPreviousAngle
+bool        controllerDidMoveDialLastFrame
+float       dialControllerTimeAtZero
+bool        vrDialIsRaycastSession
+int         slidableGraphSessionId
+int         slidableGraphIdleFrames
+int         slidableSessionId
+int         slidableIdleFrames
+bool        slidableIsVrHandSession
+float       slidableVrStartPercentOffset
+int         rotatableSessionId
+int         rotatableIdleFrames
+int         hingeSessionId
+int         hingePointerId
+float       lastAngle
+bool        forceWaterUpdate
+int         turnableSessionId
+int         joystickSessionId
+bool        vrJoystickIsRaycastSession
+int         surfaceTriggerSessionId
+float       surfaceDistancePassed
+int         toolUseSessionId
+int         keypadButtonSessionId
+int         slotTouchFrame
+float       slotTouchTime
+int         circleTweenState
+float       dragItemScale
+int         customDragInteractionId
+int         dragSessionId
+int         dragSolverIterations
+int         hingeSolverIterations
+float       oldAngularDrag
+float       rotationinputSpeed
+bool        luaSharedInitDone
+bool        isLoadingLevel
+bool        waitForInstallToLoadLevel
+float       timeSendGetInfoAboutDownload
+
+Menu Settings
+-------------------------------------------------
+int         frameLoadingCanvasEnabled
+
+Rate Workshop Settings
+--------------------------------------------------
+bool        isChatOpen
+string      previousInputedChatMessage
+
+Wheel Settings
+--------------------------------------------------
+float       hintBoxTimer
+float       hintWaitTime
+int         selectedHintINdex
+int         loadingHintIndex
+bool        isRebindingEnterKeyOpen
+bool        isStreamlinedUI
+bool        showTimer
+bool        exitDoorPressed
+bool        exiting
+bool        debugShowNameLabel
+int         lastSelectedHintIndex
+int         lastSelectedHintLevelIndex
+float       finishstartTime
+int         confettiIndex
+
+Multiplayer Settings
+--------------------------------------------------
+bool        showGizmoAuthority
+bool        isMultiplayer
+bool        isProcessingPacket
+bool        checkedHash
+
+Multiplayer - Voice Chat Settings
+--------------------------------------------------
+bool        showVoiceChatIndicators
+bool        useProximityVoiceChat
+bool        sendTeleportPose
+bool        lastSentPlayerCrouch
+float       lastSentPlayerPoseTimestamp
+bool        lastSentPlayerClimb
+int         lastSentPlayerClimbDir
+bool        initialIsReadySent
+float       timeToSendIsReady
+float       sessionReconnectTime
+bool        splitscreenDebugSendKeepalive
+bool        isDisconnecting
+bool        isDisconnectingLastFrame
+float       disconnectingTime
+float       keepAliveSendCooldown
+float       netLevelTime
+float       sharedZoomAddRigidbodyCooldownToNewSend
+bool        isSplitscreen
+bool        loadLatestSave
+bool        hasControl
+float       timeLastSentSyncTimers
+bool        netActivatedAutoplaySwitches
+bool        removingNetLoadingScreen
+string      lastHashIterations
+
+PC Controls Settings
+------------------------------------------------
+float       cursorScaleMultiplier
+float       cursorTrailStepMove
+int         pcSelectedItem
+bool        shouldItemGhostBeVisible
+bool        shouldItemImpostortBewVisible
+bool        shouldItemScreenSpaceBeVisible
+bool        wasInPineModeLastFrame
+bool        inInventoryFocus
+bool        inTrashInventoryFocus
+bool        isTrashFocusOpen
+bool        inSlotInventoryFocus
+bool        isInSlotInventoryAnimation
+bool        isStreamlinedHoverUI
+float       placeInTopTime
+int         placeInTopHistoryCount
+bool        showCrosshair
+bool        showHint
+float       focusModeInternalTally
+float       timeInSelectedMode
+bool        lockUntilUp
+float       itemImpostorInitialWeight
+float       itemImpostorWorldSlotWeight
+bool        joystickIsPlayerRunning
+bool        forceSyncCursorVisible
+bool        lastFrameCursorVisible
+int         joystickZoomHoveredInventoryItem
+float       joystickTrashMoveCD
+int         draggingInventoryIndex
+float       deadZoneTime
+bool        isZoomedWithController
+
+Rendering Settings
+------------------------------------------------
+float       overrideOriginalExposure
+float       overrideOriginalExposure
+float       customeRoomExposure
+float       playerScreenPercentage
+float       deviceScreenPercantageMax
+int         deviceFrameRateMax
+int         deviceAntiAliasingMax
+float       thermalScreenPercentage
+int         thermalFrameRate
+int         thermalAntiAliasing
+bool        thermalsEnabled
+bool        respectDeviceMax
+float       thermalStateLastCheck
+bool        currentVertexLightingState
+int         frameTimingCounter
+float       lastRealtimeSinceStartup
+bool        qualitySettingsReduced
+bool        questcolorGradingActive
+float       questTestContrast
+float       questTestSaturation
+float       questTestHue
