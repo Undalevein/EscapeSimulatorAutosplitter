@@ -7,7 +7,13 @@
     for getting some of the work done on this autosplitter that I have continued.
 
     Author: Undalevein
-    Last worked: September 22, 2025.
+    Last worked: October 5, 2025.
+    Update Info: 
+        - Split the IL feature up and have the reset feature be separate.
+        - Added a setting where the game will split if you pick up a Token, whether it has
+          been collected or not.
+        - Added a setting where the game will split if you collect all 8 Tokens in the same
+          room, whetehr it has been collected or not.
 */
 
 state("Escape Simulator") {}
@@ -31,9 +37,13 @@ startup
     
     settings.Add("last_pack_split", false, "Split when you complete the last level in the pack.");
     settings.Add("level_completion_split", true, "Split when completing any level.");
+    settings.Add("token_split", false, "Split when you collect any Token.");
+    settings.Add("all_tokens_split", false, "Split when you collect the eighth Token in the same room.");
     settings.Add("tutorial_start", false, "Full Game Runs: Start timings with the Tutorial level.");
     settings.Add("first_chamber_start", false, "First # Runs: Start timings with The First Chamber level.");
-    settings.Add("il_mode", false, "Individual Level Runs: timer starts in opening first level, ends at last. Resets when entering menu.");
+    settings.Add("il_mode", false, "Individual Level Runs: timer starts in opening first level, ends at last. ");
+    settings.Add("il_mode_reset", false, "Reset when entering menu the menu.", "il_mode");
+
 
     List<string> IndividualLevelStart = new List<string>();
     IndividualLevelStart.Add("Toy1");               // Tutorial (first part)
@@ -92,6 +102,8 @@ startup
     NonSplitableScenes.Add("Toy1");                 // Tutorial (first part)
     vars.NonSplitableScenes = NonSplitableScenes;
 
+    vars.tokenCounter = 0;
+
     vars.isLoading = false;
 }
 
@@ -105,6 +117,7 @@ init
 
         var gameClass = mono["EscapeSimulator.Core", "Game"];
         var gameInstance = jit.AddInst("Game");
+        var gameFlag = jit.AddFlag("Game", "handleToken");
 
         var menuClass = mono["EscapeSimulator.Core", "Menu"];
         var menuInstance = jit.AddInst("Menu");
@@ -118,6 +131,7 @@ init
         vars.Helper["exiting"] = vars.Helper.Make<bool>(gameInstance, gameClass["exiting"]);
         vars.Helper["loadingFromMenu"] = vars.Helper.Make<bool>(menuInstance, menuClass["loadingLevel"]);
         vars.Helper["alphaCurrent"] = vars.Helper.Make<float>(loadingCanvasInstance, loadingCanvasClass["alphaCurrent"]);
+        vars.Helper["gotToken"] = vars.Helper.Make<int>(gameFlag);
         
         return true;
     });
@@ -128,6 +142,7 @@ init
     old.exiting = false;
     old.loadingFromMenu = false;
     old.alphaCurrent = 0.0;
+    old.gotToken = 0;
 }
 
 
@@ -135,6 +150,16 @@ update
 {   
     // Level names is used for logging and accurate comparaisons; more reliable.
     current.SceneName = vars.Helper.Scenes.Active.Name;
+
+    // Token Counter Logic
+    if (old.gotToken != current.gotToken)
+    {
+        vars.tokenCounter++;
+    }
+    if (vars.isLoading)
+    {
+        vars.tokenCounter = 0;
+    }
 
     // Logging Swamp
     if (old.levelCompleted != current.levelCompleted)
@@ -159,6 +184,10 @@ update
         {
             vars.log("Alpha current is now lowering from 1.0");
         }   
+    }
+    if (old.gotToken != current.gotToken)
+    {
+        vars.log("Got Token: " + current.gotToken);
     }
 }
 
@@ -186,26 +215,21 @@ start
     return doStart;
 }
 
+
 reset
 {
     /*
         Reset only if the following conditions have been satisfied:
-            - The condition il_mode has been checked from the user settings.
+            - The condition il_mode_reset has been checked from the user settings.
             - The player enters the Menu.
-
-        This assumes that no new strategies will involve going to the menu. However,
-        I believe that if the player leaves to the menu when running for IL runs,
-        most certainly they are doing this because they want to reset the entire
-        run.
     */
-    return settings["il_mode"] && current.SceneName == "MenuPC";
+    return settings["il_mode_reset"] && current.SceneName == "MenuPC";
 }
+
 
 onReset
 {
-    /*
-        This method exists because vars.isLoading is a flip-flop variable, so reset it.
-    */
+    // vars.isLoading is a flip-flop variable, so reset it.
     vars.isLoading = false;
 }
 
@@ -224,10 +248,14 @@ split
     */
     bool doSplit = !old.levelCompleted && current.levelCompleted && !vars.NonSplitableScenes.Contains(current.SceneName) &&
                    (settings["level_completion_split"] ||
-                    settings["last_pack_split"] && vars.IndividualLevelTerminate.Contains(current.SceneName));
+                    settings["last_pack_split"] && vars.IndividualLevelTerminate.Contains(current.SceneName)) 
+                    ||
+                    (settings["token_split"] && old.gotToken != current.gotToken ||
+                    settings["all_tokens_split"] && old.gotToken != current.gotToken && vars.tokenCounter == 8);
     if (doSplit) vars.log("Split has occurred!");
     return doSplit;
 }
+
 
 isLoading
 {
