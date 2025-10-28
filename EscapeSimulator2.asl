@@ -36,15 +36,15 @@ startup
     List<string> IndividualLevelStart = new List<string>();
     IndividualLevelStart.Add("Tutorial1");               // Tutorial
     IndividualLevelStart.Add("Dracula1");                // Courtyard
-    IndividualLevelStart.Add("Eos1");                    // Hybernation Pods    (These and below are guesses, please change later)
-    IndividualLevelStart.Add("Treasure1");               // Tavern
+    IndividualLevelStart.Add("Space1");                  // Hybernation Pods    (These and below are guesses, please change later)
+    IndividualLevelStart.Add("Pirate1");                 // Tavern
     vars.IndividualLevelStart = IndividualLevelStart;
 
     List<string> IndividualLevelTerminate = new List<string>();
     IndividualLevelTerminate.Add("Tutorial1");           // Tutorial
     IndividualLevelTerminate.Add("Dracula4");            // Crypt
-    IndividualLevelTerminate.Add("Eos4");                // Into the Unknown    (These and below are guesses, please change later)
-    IndividualLevelTerminate.Add("Treasure4");           // Hideout
+    IndividualLevelTerminate.Add("Space4");              // Into the Unknown    (These and below are guesses, please change later)
+    IndividualLevelTerminate.Add("Pirate4");             // Hideout
     vars.IndividualLevelTerminate = IndividualLevelTerminate;
 
     List<string> DarkestPuzzles = new List<string>();
@@ -52,14 +52,14 @@ startup
     DarkestPuzzles.Add("DraculaDarkest2");
     DarkestPuzzles.Add("DraculaDarkest3");
     DarkestPuzzles.Add("DraculaDarkest4");
-    DarkestPuzzles.Add("EosDarkest1");
-    DarkestPuzzles.Add("EosDarkest2");
-    DarkestPuzzles.Add("EosDarkest3");
-    DarkestPuzzles.Add("EosDarkest4");
-    DarkestPuzzles.Add("TreasureDarkest1");
-    DarkestPuzzles.Add("TreasureDarkest2");
-    DarkestPuzzles.Add("TreasureDarkest3");
-    DarkestPuzzles.Add("TreasureDarkest4");
+    DarkestPuzzles.Add("SpaceDarkest1");
+    DarkestPuzzles.Add("SpaceDarkest2");
+    DarkestPuzzles.Add("SpaceDarkest3");
+    DarkestPuzzles.Add("SpaceDarkest4");
+    DarkestPuzzles.Add("PirateDarkest1");
+    DarkestPuzzles.Add("PirateDarkest2");
+    DarkestPuzzles.Add("PirateDarkest3");
+    DarkestPuzzles.Add("PirateDarkest4");
     vars.DarkestPuzzles = DarkestPuzzles;
 
     List<string> NonSplitableScenes = new List<string>();
@@ -81,19 +81,21 @@ init
 
         var gameClass = mono["EscapeSimulator.Core", "Game"];
         var gameInstance = jit.AddInst("Game");
+        // var puzzleCompletedFlag = jit.AddFlag("Game", "finishPuzzle");
 
         var menuClass = mono["EscapeSimulator.Core", "Menu"];
         var menuInstance = jit.AddInst("Menu");
 
         var loadingCanvasClass = mono["EscapeSimulator.Core", "LoadingCanvas"];
         var loadingCanvasInstance = jit.AddInst("LoadingCanvas");
+;
 
         jit.ProcessQueue();
 
         vars.Helper["levelCompleted"] = vars.Helper.Make<bool>(gameInstance, gameClass["isLevelCompleted"]);
         vars.Helper["exiting"] = vars.Helper.Make<bool>(gameInstance, gameClass["exiting"]);
-        vars.Helper["loadingFromMenu"] = vars.Helper.Make<bool>(menuInstance, menuClass["isLoadingLevel"]);
-        vars.Helper["alphaCurrent"] = vars.Helper.Make<float>(loadingCanvasInstance, loadingCanvasClass["alphaCurrent"]);
+        // vars.Helper["puzzleCompleted"] = vars.Helper.Make<int>(puzzleCompletedFlag);
+        
         
         return true;
     });
@@ -102,8 +104,6 @@ init
     current.SceneName = "MenuPC";
     old.levelCompleted = false;
     old.exiting = false;
-    old.loadingFromMenu = false;
-    old.alphaCurrent = 0.0;
 }
 
 
@@ -111,7 +111,7 @@ update
 {   
     // Level names is used for logging and accurate comparaisons.
     current.SceneName = vars.Helper.Scenes.Active.Name;
-
+    
     // Logging Swamp
     if (old.levelCompleted != current.levelCompleted)
     {
@@ -125,27 +125,13 @@ update
     {
         vars.log("Current Scene Name: " + current.SceneName);
     }
-    if (old.loadingFromMenu != current.loadingFromMenu)
-    {
-        vars.log("Is Loading from Menu: " + current.loadingFromMenu);
-    }
-    if (old.alphaCurrent != current.alphaCurrent)
-    {
-        if (old.alphaCurrent == 1f && current.alphaCurrent != 1f) 
-        {
-            vars.log("Alpha current is now lowering from 1.0");
-        }   
-    }
 }
 
 
 start
 {
     /*
-        To tell if a level started, this boolean attempts to figure out the moment
-        you transition from the loading screen (NOT WHEN THE OBJECTS ARE RENDERED IN) 
-        to gameplay. This is through the alphaCurrent variable, which is the transparnecy
-        value used for the loading screen image.
+        Player starts upon player getting control.
 
         One of the other conditions below must be satisfied as well, based on user's settings:
             - il_mode is toggled on and the level is the beginning of the pack.
@@ -154,7 +140,7 @@ start
         
         One last thing: NEVER START THE SPLIT TWICE OR MORE ON THE SAME LEVEL!!!
     */
-    bool doStart = current.alphaCurrent != 1f && old.alphaCurrent > current.alphaCurrent && 
+    bool doStart = old.exiting && !current.exiting && 
                    (settings["il_mode"] && vars.IndividualLevelStart.Contains(current.SceneName) ||
                     settings["tutorial_start"] && current.SceneName == "Tutorial1");
     if (doStart) vars.log("Splits has started!");
@@ -207,12 +193,12 @@ split
 
 isLoading
 {
-    if (vars.isLoading && current.alphaCurrent != 1f && old.alphaCurrent > current.alphaCurrent) 
+    if (vars.isLoading && old.exiting && !current.exiting) 
     {   
         vars.log("Level has finished loading, timer resumed.");
         vars.isLoading = false;
     }
-    else if (!vars.isLoading && (current.exiting && current.SceneName != "MenuPC" || !old.loadingFromMenu && current.loadingFromMenu))
+    else if (!vars.isLoading && !old.exiting && current.exiting)
     {
         vars.log("Level is loading, timer paused.");
         vars.isLoading = true;
