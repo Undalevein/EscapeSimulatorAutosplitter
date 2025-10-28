@@ -2,11 +2,8 @@
     Yep, a continuation of losing my mind in pointer scanning 2.0. Luckily there's carry over from
     the previous game.
 
-    For the record, this works for the DEMO version of the game. This will need to be changed
-    for the official release.
-
     Author: Undalevein
-    Last worked: September 24, 2025.
+    Last worked: October 28, 2025.
 */
 
 state("Escape Simulator 2") {}
@@ -32,6 +29,8 @@ startup
     settings.Add("level_completion_split", true, "Split when completing any level.");
     settings.Add("tutorial_start", false, "Full Game Runs: Start timings with the Tutorial level.");
     settings.Add("il_mode", false, "Individual Level Runs: timer starts in opening first level, ends at last. Resets when entering menu.");
+    settings.Add("token_split", false, "Split when you collect any Token.");
+    settings.Add("all_tokens_split", false, "Split when you collect the eighth Token in the same room.");
 
     List<string> IndividualLevelStart = new List<string>();
     IndividualLevelStart.Add("Tutorial1");               // Tutorial
@@ -68,6 +67,8 @@ startup
     NonSplitableScenes.Add(null);                       // Loading Transition
     vars.NonSplitableScenes = NonSplitableScenes;
 
+    vars.tokenCounter = 0;
+
     vars.isLoading = false;
 }
 
@@ -81,6 +82,7 @@ init
 
         var gameClass = mono["EscapeSimulator.Core", "Game"];
         var gameInstance = jit.AddInst("Game");
+        var gameFlag = jit.AddFlag("Game", "handleToken");
         // var puzzleCompletedFlag = jit.AddFlag("Game", "finishPuzzle");
 
         var menuClass = mono["EscapeSimulator.Core", "Menu"];
@@ -94,8 +96,8 @@ init
 
         vars.Helper["levelCompleted"] = vars.Helper.Make<bool>(gameInstance, gameClass["isLevelCompleted"]);
         vars.Helper["exiting"] = vars.Helper.Make<bool>(gameInstance, gameClass["exiting"]);
+        vars.Helper["gotToken"] = vars.Helper.Make<int>(gameFlag);
         // vars.Helper["puzzleCompleted"] = vars.Helper.Make<int>(puzzleCompletedFlag);
-        
         
         return true;
     });
@@ -104,6 +106,7 @@ init
     current.SceneName = "MenuPC";
     old.levelCompleted = false;
     old.exiting = false;
+    old.gotToken = 0;
 }
 
 
@@ -111,7 +114,17 @@ update
 {   
     // Level names is used for logging and accurate comparaisons.
     current.SceneName = vars.Helper.Scenes.Active.Name;
-    
+
+    // Token Counter Logic
+    if (old.gotToken != current.gotToken)
+    {
+        vars.tokenCounter++;
+    }
+    if (vars.isLoading)
+    {
+        vars.tokenCounter = 0;
+    }
+
     // Logging Swamp
     if (old.levelCompleted != current.levelCompleted)
     {
@@ -124,6 +137,10 @@ update
     if (old.SceneName != current.SceneName)
     {
         vars.log("Current Scene Name: " + current.SceneName);
+    }
+    if (old.gotToken != current.gotToken)
+    {
+        vars.log("Got Token: " + current.gotToken);
     }
 }
 
@@ -185,7 +202,10 @@ split
     */
     bool doSplit = !old.levelCompleted && current.levelCompleted && !vars.NonSplitableScenes.Contains(current.SceneName) &&
                    (settings["level_completion_split"] ||
-                    settings["last_pack_split"] && vars.IndividualLevelTerminate.Contains(current.SceneName));
+                    settings["last_pack_split"] && vars.IndividualLevelTerminate.Contains(current.SceneName))
+                   ||
+                   (settings["token_split"] && old.gotToken != current.gotToken ||
+                   settings["all_tokens_split"] && old.gotToken != current.gotToken && vars.tokenCounter == 8);
     if (doSplit) vars.log("Split has occurred!");
     return doSplit;
 }
