@@ -27,10 +27,12 @@ startup
     
     settings.Add("last_pack_split", false, "Split when you complete the last level in the pack.");
     settings.Add("level_completion_split", true, "Split when completing any level.");
-    settings.Add("tutorial_start", false, "Full Game Runs: Start timings with the Tutorial level.");
-    settings.Add("il_mode", false, "Individual Level Runs: timer starts in opening first level, ends at last. Resets when entering menu.");
     settings.Add("token_split", false, "Split when you collect any Token.");
     settings.Add("all_tokens_split", false, "Split when you collect the eighth Token in the same room.");
+    settings.Add("tutorial_start", false, "Full Game Runs: Start timings with the Tutorial level.");
+    settings.Add("il_mode", false, "Individual Level Runs: timer starts in opening first level, ends at last.");
+    settings.Add("il_mode_reset", false, "Reset when entering menu the menu.", "il_mode");
+
 
     List<string> IndividualLevelStart = new List<string>();
     IndividualLevelStart.Add("Tutorial1");               // Tutorial
@@ -176,7 +178,7 @@ reset
         most certainly they are doing this because they want to reset the entire
         run.
     */
-    return settings["il_mode"] && current.SceneName == "MenuPC";
+    return settings["il_mode_reset"] && current.SceneName == "Lobby1";
 }
 
 onReset
