@@ -42,7 +42,7 @@ startup
     settings.Add("tutorial_start", false, "Full Game Runs: Start timings with the Tutorial level.");
     settings.Add("first_chamber_start", false, "First # Runs: Start timings with The First Chamber level.");
     settings.Add("il_mode", false, "Individual Level Runs: timer starts in opening first level, ends at last. ");
-    settings.Add("il_mode_reset", false, "Reset when entering menu the menu.", "il_mode");
+    settings.Add("il_mode_reset", false, "Reset when entering the menu.", "il_mode");
 
 
     List<string> IndividualLevelStart = new List<string>();
