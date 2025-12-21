@@ -39,6 +39,7 @@ startup
     IndividualLevelStart.Add("Dracula1");                // Courtyard
     IndividualLevelStart.Add("Space1");                  // Hybernation Pods    (These and below are guesses, please change later)
     IndividualLevelStart.Add("Pirate1");                 // Tavern
+    IndividualLevelStart.Add("Extra1");                  // Christmas Eve
     vars.IndividualLevelStart = IndividualLevelStart;
 
     List<string> IndividualLevelTerminate = new List<string>();
@@ -46,6 +47,7 @@ startup
     IndividualLevelTerminate.Add("Dracula4");            // Crypt
     IndividualLevelTerminate.Add("Space4");              // Into the Unknown    (These and below are guesses, please change later)
     IndividualLevelTerminate.Add("Pirate4");             // Hideout
+    IndividualLevelTerminate.Add("Extra1");              // Christmas Eve
     vars.IndividualLevelTerminate = IndividualLevelTerminate;
 
     List<string> DarkestPuzzles = new List<string>();
@@ -61,6 +63,8 @@ startup
     DarkestPuzzles.Add("PirateDarkest2");
     DarkestPuzzles.Add("PirateDarkest3");
     DarkestPuzzles.Add("PirateDarkest4");
+    DarkestPuzzles.Add("ExtraDarkest1");
+    DarkestPuzzles.Add("SecretLevel1");
     vars.DarkestPuzzles = DarkestPuzzles;
 
     List<string> NonSplitableScenes = new List<string>();
@@ -72,6 +76,9 @@ startup
     vars.tokenCounter = 0;
 
     vars.isLoading = false;
+
+    vars.checkCounter = 0;
+    vars.levelLoaded = false;
 }
 
 
@@ -85,22 +92,21 @@ init
         var gameClass = mono["EscapeSimulator.Core", "Game"];
         var gameInstance = jit.AddInst("Game");
         var gameFlag = jit.AddFlag("Game", "handleToken");
-        // var puzzleCompletedFlag = jit.AddFlag("Game", "finishPuzzle");
-
-        var menuClass = mono["EscapeSimulator.Core", "Menu"];
-        var menuInstance = jit.AddInst("Menu");
 
         var loadingCanvasClass = mono["EscapeSimulator.Core", "LoadingCanvas"];
         var loadingCanvasInstance = jit.AddInst("LoadingCanvas");
-;
+
+        var menuClass = mono["EscapeSimulator.Core", "Menu"];
+        var menuInstance = jit.AddInst("Menu");
 
         jit.ProcessQueue();
 
         vars.Helper["levelCompleted"] = vars.Helper.Make<bool>(gameInstance, gameClass["isLevelCompleted"]);
         vars.Helper["exiting"] = vars.Helper.Make<bool>(gameInstance, gameClass["exiting"]);
         vars.Helper["gotToken"] = vars.Helper.Make<int>(gameFlag);
-        // vars.Helper["puzzleCompleted"] = vars.Helper.Make<int>(puzzleCompletedFlag);
-        
+        vars.Helper["listCount"] = vars.Helper.Make<int>(loadingCanvasInstance, loadingCanvasClass["endConditions"], 0x28);
+        vars.Helper["inCoverScreen"] = vars.Helper.Make<bool>(menuInstance, menuClass["inCoverScreen"]);
+
         return true;
     });
     
@@ -109,6 +115,9 @@ init
     old.levelCompleted = false;
     old.exiting = false;
     old.gotToken = 0;
+    old.listCount = 0;
+    old.hasControl = true;
+    old.inCoverScreen = true;
 }
 
 
@@ -116,6 +125,12 @@ update
 {   
     // Level names is used for logging and accurate comparaisons.
     current.SceneName = vars.Helper.Scenes.Active.Name;
+
+    // Reset if in Cover Screen Menu
+    if (current.inCoverScreen)
+    {
+        vars.checkCounter = 0;
+    }
 
     // Token Counter Logic
     if (old.gotToken != current.gotToken)
@@ -127,14 +142,22 @@ update
         vars.tokenCounter = 0;
     }
 
+    vars.levelLoaded = false;
+
+    if (current.listCount == 0 && old.listCount == 1) 
+    {
+        vars.checkCounter++;
+        if (vars.checkCounter == 2)
+        {
+            vars.checkCounter = 0;
+            vars.levelLoaded = true;
+        }
+    }
+
     // Logging Swamp
     if (old.levelCompleted != current.levelCompleted)
     {
         vars.log("Level Completed: " + current.levelCompleted);
-    }
-    if (old.exiting != current.exiting)
-    {
-        vars.log("Exiting: " + current.exiting);
     }
     if (old.SceneName != current.SceneName)
     {
@@ -143,6 +166,18 @@ update
     if (old.gotToken != current.gotToken)
     {
         vars.log("Got Token: " + current.gotToken);
+    }
+    if (old.exiting != current.exiting)
+    {
+        vars.log("Loading Next Level : " + current.exiting);
+    }
+    if (old.listCount != current.listCount)
+    {
+        vars.log("List Count : " + current.listCount);
+    }
+    if (old.inCoverScreen != current.inCoverScreen)
+    {
+        vars.log("In Cover Screen : " + current.inCoverScreen);
     }
 }
 
@@ -159,12 +194,13 @@ start
         
         One last thing: NEVER START THE SPLIT TWICE OR MORE ON THE SAME LEVEL!!!
     */
-    bool doStart = old.exiting && !current.exiting && 
+    bool doStart = vars.levelLoaded &&
                    (settings["il_mode"] && vars.IndividualLevelStart.Contains(current.SceneName) ||
-                    settings["tutorial_start"] && current.SceneName == "Tutorial1");
-    if (doStart) vars.log("Splits has started!");
+                   settings["tutorial_start"] && current.SceneName == "Tutorial1");
+    if (doStart) { vars.log("Splits has started!"); }
     return doStart;
 }
+
 
 reset
 {
@@ -180,6 +216,7 @@ reset
     */
     return settings["il_mode_reset"] && current.SceneName == "Lobby1";
 }
+
 
 onReset
 {
@@ -215,7 +252,7 @@ split
 
 isLoading
 {
-    if (vars.isLoading && old.exiting && !current.exiting) 
+    if (vars.isLoading && vars.levelLoaded) 
     {   
         vars.log("Level has finished loading, timer resumed.");
         vars.isLoading = false;
