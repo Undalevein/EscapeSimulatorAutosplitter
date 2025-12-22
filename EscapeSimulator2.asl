@@ -28,7 +28,7 @@ startup
     settings.Add("last_pack_split", false, "Split when you complete the last level in the pack.");
     settings.Add("level_completion_split", true, "Split when completing any level.");
     settings.Add("token_split", false, "Split when you collect any Token.");
-    settings.Add("all_tokens_split", false, "Split when you collect the eighth Token in the same room.");
+    settings.Add("all_tokens_split", false, "Split when you collect the all Tokens in the same room.");
     settings.Add("tutorial_start", false, "Full Game Runs: Start timings with the Tutorial level.");
     settings.Add("il_mode", false, "Individual Level Runs: timer starts in opening first level, ends at last.");
     settings.Add("il_mode_reset", false, "Reset when entering the menu.", "il_mode");
@@ -74,6 +74,7 @@ startup
     vars.NonSplitableScenes = NonSplitableScenes;
 
     vars.tokenCounter = 0;
+    vars.gotAllTokens = false;
 
     vars.isLoading = false;
 
@@ -132,15 +133,21 @@ update
         vars.checkCounter = 0;
     }
 
-    // Token Counter Logic
+    #region Token Counter Logic
+    vars.gotAllTokens = false;
     if (old.gotToken != current.gotToken)
     {
         vars.tokenCounter++;
+        // Note: Unlike main levels, Dracula Darkest 4 contains 1 Token.
+        vars.gotAllTokens = 
+            current.SceneName == "DraculaDarkest4" ||
+            vars.tokenCounter == 8;
     }
     if (vars.isLoading)
     {
         vars.tokenCounter = 0;
     }
+    #endregion
 
     vars.levelLoaded = false;
 
@@ -154,7 +161,7 @@ update
         }
     }
 
-    // Logging Swamp
+    #region Logging Swamp
     if (old.levelCompleted != current.levelCompleted)
     {
         vars.log("Level Completed: " + current.levelCompleted);
@@ -179,6 +186,7 @@ update
     {
         vars.log("In Cover Screen : " + current.inCoverScreen);
     }
+    #endregion
 }
 
 
@@ -244,7 +252,7 @@ split
                     settings["last_pack_split"] && vars.IndividualLevelTerminate.Contains(current.SceneName))
                    ||
                    (settings["token_split"] && old.gotToken != current.gotToken ||
-                   settings["all_tokens_split"] && old.gotToken != current.gotToken && vars.tokenCounter == 8);
+                   settings["all_tokens_split"] && vars.gotAllTokens);
     if (doSplit) vars.log("Split has occurred!");
     return doSplit;
 }
