@@ -28,11 +28,6 @@ This is the recommended way of downloading the AutoSplitter, as it automatically
 6. Toggle the options like you would normally with an Auto Splitter.
 7. Boot up the game and test it!
 
-
-### Credit
-
-This is a continuation on Jonc4's AutoSplitter that was made in the beginning, with the last update being the Steampunk update. With his work, I was able to fix some of the features he made, so I am grateful for his efforts.
-
 ## Disclaimers
 
 Even though the AutoSplitter is robust in its current state, I won't be implementing the following features:
@@ -40,4 +35,10 @@ Even though the AutoSplitter is robust in its current state, I won't be implemen
 2. **Other Consoles** - My Mac is busted, and I don't think I will get another anytime soon. XBox, PlayStation, and other console versions I may not consider.
 
 ## Future Updates
-This is depenedent on the popularity of *Escape Simulator* and *Escape Simulator 2* speedrunning in general. I will continue to update the game based on the community needs, but if not I will be updating based on the new official maps for either games.
+This is depenedent on the popularity of *Escape Simulator* and *Escape Simulator 2* speedrunning in general. I will continue to update the game based on the community needs, but if not I will be updating based on the new official maps for either games (i.e. a new map for the "Extras" category).
+
+If you experience any bugs with the AutoSplitter, please go and fill out the form in [Issues Page](https://github.com/Undalevein/EscapeSimulatorAutosplitter/issues). I am quite busy, but I'll try my best to resolve these once I got the time.
+
+## Credit
+
+This is a continuation on Jonc4's AutoSplitter that was made in the beginning, with the last update being the Steampunk update. With his work, I was able to fix some of the features he made, so I am grateful for his efforts.
