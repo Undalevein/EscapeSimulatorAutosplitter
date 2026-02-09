@@ -7,7 +7,7 @@ if (-not (Test-Path -path $folder)) {
 Remove-Item -Path "$folder\*.*"
 
 $accepted = @(".asl")
-$files = Get-ChildItem -Path $PSScriptRoot | where {$_.extension -in $accepted}
+$files = Get-ChildItem -Path $PSScriptRoot | Where-Object {$_.extension -in $accepted}
 
 foreach ($file in $files) {
     Compress-Archive -LiteralPath "$PSScriptRoot\$($file.Name)" -DestinationPath "$folder\$($file.Name)".replace(".asl", ".zip")
