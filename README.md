@@ -3,15 +3,15 @@
 ## NOTICE
 I am changing git repositories from GitHub to Codeberg. As such, this repository will no longer be maintained. Please go to my [Codeberg Repository](https://codeberg.org/Undalevein/EscapeSimulatorAutosplitter) for the latest Escape Simulator AutoSplitters.
 
-### Motivations
+## Motivations
 
 As Escape Simulator gets more updates, loading times continue to get worse and worse. As someone who likes to speedrun this game during my leisure, I often lose time due to hardware differences and I would find myself not being able to compete for the world record for the IL leaderboards. This is especially compounded for coop runs.
 
 This AutoSplitter is meant to address this issue by not only giving accurate split times for comparison, but to also remove loading times to make running Escape Simulator more accesssible to players.
 
-### Installation
+## Installation
 
-#### Automatic Installation with LiveSplit 
+### Automatic Installation with LiveSplit 
 This is the recommended way of downloading the AutoSplitter, as it automatically downloads the latest version of the AutoSplitter if a new version is available. 
 
 1. If you have not already done so, download the latest version of [LiveSplit](https://livesplit.org/downloads/). 
@@ -21,7 +21,7 @@ This is the recommended way of downloading the AutoSplitter, as it automatically
 5. To change your AutoSplitter settings, click on "Settings." There you can toggle any option depending on what you want!
 6. That's it!
 
-#### Manual Installation
+### Manual Installation
 
 1. If you have not already done so, download the latest version of [LiveSplit](https://livesplit.org/downloads/). 
 2. Download the file `EscapeSimulator.asl` and the `Components` folder with the helper file and put somewhere in your computer. They should both be in the same directory. Copy the file location of the `.asl` file onto your clipboard.
