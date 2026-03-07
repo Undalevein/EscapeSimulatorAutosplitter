@@ -1,5 +1,8 @@
 # Escape Simulator AutoSplitter
 
+## NOTICE
+I am changing git repositories from GitHub to Codeberg. As such, this repository will no longer be maintained. Please go to my [Codeberg Repository](https://codeberg.org/Undalevein/EscapeSimulatorAutosplitter) for the latest Escape Simulator AutoSplitters.
+
 ### Motivations
 
 As Escape Simulator gets more updates, loading times continue to get worse and worse. As someone who likes to speedrun this game during my leisure, I often lose time due to hardware differences and I would find myself not being able to compete for the world record for the IL leaderboards. This is especially compounded for coop runs.
